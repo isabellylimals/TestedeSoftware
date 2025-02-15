@@ -3,7 +3,7 @@
 import pytest
 from main.service import ProntoSocorroService
 from main.repository import PacienteRepository, AtendimentoRepository
-from main.model import Paciente, FichaAnalise
+from main.domain import Paciente, FichaAnalise
 
 def test_registrar_paciente():
     paciente_repo = PacienteRepository()
