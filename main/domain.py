@@ -21,13 +21,12 @@ class Paciente:
     nome: str
     cpf: str
     email: str
-    nascimento: datetime #era str e apresentou erro
+    nascimento: str
 
     def __post_init__(self):
         self.validar_nome(self.nome)
         self.validar_cpf(self.cpf)
         self.validar_email(self.email)
-        self.nascimento = self.validar_nascimento(self.nascimento)
 
     def validar_nome(self, nome: str) -> str:
         if not nome or not nome.strip():
@@ -37,7 +36,7 @@ class Paciente:
         return nome.strip()
 
     def validar_cpf(self, cpf: str) -> str:
-        cpf = re.sub(r"[^0-9]", "", cpf)  
+        cpf = re.sub(r"[^0-9]", "", cpf)  # Remove caracteres não numéricos
         if not cpf.isdigit():
             raise ValidacaoError("CPF inválido, deve conter 11 dígitos numéricos.")
         return cpf
@@ -46,16 +45,17 @@ class Paciente:
         if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
             raise ValidacaoError("E-mail inválido.")
         return email
-    def validar_nascimento(self, nascimento: str) -> datetime: #mudança
+
+    def validar_nascimento(self, nascimento: str) -> str:
         try:
             data = datetime.strptime(nascimento, "%d/%m/%Y")
             if data > datetime.now():
                 raise ValidacaoError("A data de nascimento não pode ser futura.")
-            return data  # Retorna um objeto datetime
+            return nascimento
         except ValueError:
             raise ValidacaoError("Data de nascimento inválida, use o formato DD/MM/YYYY.")
-        
-def __str__(self):
+
+    def __str__(self):
         return f'Paciente: {self.nome} ({self.cpf})'
 
 class Risco(Enum):
@@ -128,4 +128,3 @@ class FilaAtendimento:
 
     def tamanho(self):
         return len(self.fila)
-
