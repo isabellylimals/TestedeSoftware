@@ -23,14 +23,11 @@ def test_classificar_risco():
     risco = service.classificar_risco(ficha)
     assert risco.name == "Emergência"
 
-def test_chamar_proximo():
+def test_chamar_proximo_sem_pacientes():
     paciente_repo = PacienteRepository()
     atendimento_repo = AtendimentoRepository(paciente_repo)
     service = ProntoSocorroService(paciente_repo, atendimento_repo)
     
-    paciente = service.registrar_paciente("João Silva", "12345678900", "joao@example.com", "01/01/1990")
-    ficha = FichaAnalise(risco_morte=True, gravidade_alta=True, gravidade_moderada=False, gravidade_baixa=False)
-    service.registrar_atendimento(paciente, service.classificar_risco(ficha))
-    
-    proximo = service.chamar_proximo()
-    assert proximo.paciente.nome == "João Silva"
+    with pytest.raises(Exception) as exc_info:
+        service.chamar_proximo()
+    assert str(exc_info.value) == "Não há pacientes na fila"
