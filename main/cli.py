@@ -36,13 +36,13 @@ class TerminalClient:
         cpf = input("CPF do paciente (apenas números): ")
 
         try:
-            # Verifica se o paciente está cadastrado
+            
             paciente = self.ps_service.pacientes.buscar(cpf)
             if paciente is None:
                 print(Fore.RED + "\nPaciente não encontrado." + Style.RESET_ALL)
                 return
 
-            # Perguntas para a triagem
+            
             print("\nResponda as perguntas de triagem (Sim ou Não):")
             risco_morte = input("O paciente corre risco de morte? ").strip().lower() == "sim"
             gravidade_alta = input("O paciente tem gravidade alta? ").strip().lower() == "sim"
@@ -50,11 +50,11 @@ class TerminalClient:
             gravidade_baixa = input("O paciente tem gravidade baixa? ").strip().lower() == "sim"
             ficha = FichaAnalise(risco_morte, gravidade_alta, gravidade_moderada, gravidade_baixa)
 
-            # Classifica o risco
+           
             risco = self.ps_service.classificar_risco(ficha)
             print(f"\nClassificação de risco: {risco.name}")
 
-            # Registra o atendimento e insere na fila
+    
             atendimento = self.ps_service.registrar_atendimento(paciente, risco)
             self.ps_service.inserir_fila_atendimento(atendimento)
             print(f"\nAtendimento registrado e inserido na fila:\n{atendimento}")
@@ -76,13 +76,13 @@ class TerminalClient:
         cpf = input("CPF do paciente (apenas números): ")
 
         try:
-            # Verifica se o paciente está cadastrado
+            
             paciente = self.ps_service.pacientes.buscar(cpf)
             if paciente is None:
                 print(Fore.RED + "\nPaciente não encontrado." + Style.RESET_ALL)
                 return
 
-            # Busca o histórico
+           
             historico = self.ps_service.buscar_historico(paciente)
             print(f"\nHistórico de atendimentos para {paciente.nome}:")
             for atendimento in historico:
@@ -91,7 +91,7 @@ class TerminalClient:
             print(Fore.RED + f"\nErro ao buscar histórico: {e.message}" + Style.RESET_ALL)
 
     def executar(self):
-        # Inicializa o cliente do serviço do pronto-socorro
+       
         while True:
             self.mostrar_menu()
             opcao = input("\nEscolha uma opção: ")
