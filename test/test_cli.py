@@ -128,6 +128,13 @@ def test_nome_invalido_caracteres(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "Nome contém caracteres inválidos." in captured.out
 
+def test_nome_invalido_caracteres_numericos(setup_cli, capsys):
+    cli, _, _ = setup_cli
+    with patch('builtins.input', side_effect=["João333Silva", "12345678900", "joao@example.com", "01/01/1990"]):
+        cli.registrar_paciente()
+    captured = capsys.readouterr()
+    assert "Nome contém caracteres inválidos." in captured.out
+
 # CT2: CPF
 def test_cpf_valido(setup_cli):
     cli, paciente_repo, _ = setup_cli
@@ -164,6 +171,22 @@ def test_cpf_invalido_caracteres(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "CPF deve conter apenas números." in captured.out
 
+def test_cpf_invalido_caracteres_espacos(setup_cli, capsys):
+    cli, _, _ = setup_cli
+    with patch('builtins.input', side_effect=["João Silva", "      ", "joao@example.com", "01/01/1990"]):
+        cli.registrar_paciente()
+    captured = capsys.readouterr()
+    assert "CPF deve conter apenas números." in captured.out
+
+def test_registrar_paciente_cpf_duplicado(setup_cli, capsys):
+    cli, _, _ = setup_cli
+    with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
+        cli.registrar_paciente()
+    with patch('builtins.input', side_effect=["Maria Silva", "12345678900", "maria@example.com", "02/02/1990"]):
+        cli.registrar_paciente()
+    captured = capsys.readouterr()
+    assert "CPF já cadastrado." in captured.out
+
 
 # CT3: E-MAIL
 def test_email_valido(setup_cli):
@@ -180,6 +203,15 @@ def test_email_invalido_sem_arroba(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "E-mail inválido." in captured.out
 
+def test_email_invalido_com_arroba_e_nao_formatado(setup_cli, capsys):
+    cli, _, _ = setup_cli
+    with patch('builtins.input', side_effect=["João@", "12345678900", "joaoexample.com", "01/01/1990"]):
+        cli.registrar_paciente()
+    captured = capsys.readouterr()
+    assert "E-mail inválido." in captured.out
+
+
+
 def test_email_vazio(setup_cli, capsys):
     cli, _, _ = setup_cli
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "", "01/01/1990"]):
@@ -194,7 +226,20 @@ def test_email_apenas_espacos(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "E-mail não informado ou contém apenas espaços." in captured.out
 
-# CT4: DATA DE NASCIMENTO
+def test_email_sem_nome_do_usuario(setup_cli, capsys):
+    cli, _, _ = setup_cli
+    with patch('builtins.input', side_effect=["João Silva", "12345678900", "@gmail.com", "01/01/1990"]):
+        cli.registrar_paciente()
+    captured = capsys.readouterr()
+    assert "E-mail não informado ou contém apenas espaços." in captured.out
+
+
+
+
+# CT4: DATA DE NASCIMENTO DIA
+
+
+
 def test_data_valida(setup_cli):
     cli, paciente_repo, _ = setup_cli
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
@@ -244,11 +289,3 @@ def test_executar_opcao_invalida(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "Opção inválida, tente novamente." in captured.out
 
-def test_registrar_paciente_cpf_duplicado(setup_cli, capsys):
-    cli, _, _ = setup_cli
-    with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
-        cli.registrar_paciente()
-    with patch('builtins.input', side_effect=["Maria Silva", "12345678900", "maria@example.com", "02/02/1990"]):
-        cli.registrar_paciente()
-    captured = capsys.readouterr()
-    assert "CPF já cadastrado." in captured.out
