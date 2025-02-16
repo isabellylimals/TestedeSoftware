@@ -261,6 +261,20 @@ def test_data_invalida_mes(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "Mês inválido." in captured.out
 
+def test_data_invalida_mes_(setup_cli, capsys):
+    cli, _, _ = setup_cli
+    with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/dois/1990"]):
+        cli.registrar_paciente()
+    captured = capsys.readouterr()
+    assert "Mês inválido." in captured.out
+
+def test_data_invalida_mes_naoinformado(setup_cli, capsys):
+    cli, _, _ = setup_cli
+    with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01//1990"]):
+        cli.registrar_paciente()
+    captured = capsys.readouterr()
+    assert "Mês inválido." in captured.out
+
 def test_data_invalida_ano(setup_cli, capsys):
     cli, _, _ = setup_cli
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/2026"]):
