@@ -3,7 +3,6 @@ from main.service import ProntoSocorroService
 from main.repository import PacienteRepository, AtendimentoRepository
 from main.domain import Paciente, FichaAnalise
 
-# Testes para registrar_paciente
 def test_registrar_paciente():
     paciente_repo = PacienteRepository()
     atendimento_repo = AtendimentoRepository(paciente_repo)
@@ -23,7 +22,6 @@ def test_registrar_paciente_cpf_duplicado():
         service.registrar_paciente("Maria Silva", "12345678900", "maria@example.com", "02/02/1990")
     assert "CPF já cadastrado" in str(exc_info.value)
 
-# Testes para classificar_risco
 def test_classificar_risco_vermelho():
     paciente_repo = PacienteRepository()
     atendimento_repo = AtendimentoRepository(paciente_repo)
@@ -69,7 +67,6 @@ def test_classificar_risco_azul():
     risco = service.classificar_risco(ficha)
     assert risco.name == "AZUL"
 
-# Testes para registrar_atendimento
 def test_registrar_atendimento():
     paciente_repo = PacienteRepository()
     atendimento_repo = AtendimentoRepository(paciente_repo)
@@ -83,7 +80,6 @@ def test_registrar_atendimento():
     assert atendimento.paciente.cpf == "12345678900"
     assert atendimento.risco.name == "AMARELO"
 
-# Testes para inserir_fila_atendimento
 def test_inserir_fila_atendimento():
     paciente_repo = PacienteRepository()
     atendimento_repo = AtendimentoRepository(paciente_repo)
@@ -97,7 +93,6 @@ def test_inserir_fila_atendimento():
     resultado = service.inserir_fila_atendimento(atendimento)
     assert resultado is True
 
-# Testes para chamar_proximo
 def test_chamar_proximo_sem_pacientes():
     paciente_repo = PacienteRepository()
     atendimento_repo = AtendimentoRepository(paciente_repo)
@@ -121,7 +116,6 @@ def test_chamar_proximo_com_pacientes():
     proximo = service.chamar_proximo()
     assert proximo.paciente.nome == "João Silva"
 
-# Testes para buscar_historico
 def test_buscar_historico_vazio():
     paciente_repo = PacienteRepository()
     atendimento_repo = AtendimentoRepository(paciente_repo)

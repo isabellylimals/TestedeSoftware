@@ -1,4 +1,3 @@
-# tests/test_cli.py
 import pytest
 from unittest.mock import patch
 from main.cli import TerminalClient
@@ -12,11 +11,9 @@ def test_registrar_paciente_cli():
     service = ProntoSocorroService(paciente_repo, atendimento_repo)
     cli = TerminalClient(service)
     
-    # Simula a entrada do usuário
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
         cli.registrar_paciente()
     
-    # Verifica se o paciente foi registrado corretamente
     paciente = paciente_repo.buscar("12345678900")
     assert paciente.nome == "João Silva"
     assert paciente.cpf == "12345678900"
@@ -27,15 +24,12 @@ def test_registrar_atendimento_cli():
     service = ProntoSocorroService(paciente_repo, atendimento_repo)
     cli = TerminalClient(service)
     
-    # Primeiro, registra um paciente
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
         cli.registrar_paciente()
     
-    # Simula a entrada do usuário para registrar um atendimento
     with patch('builtins.input', side_effect=["12345678900", "sim", "não", "não", "não"]):
         cli.registrar_atendimento()
     
-    # Verifica se o atendimento foi registrado corretamente
     paciente = paciente_repo.buscar("12345678900")
     assert len(service.buscar_historico(paciente)) == 1
 
@@ -46,17 +40,16 @@ def test_chamar_proximo(capsys):
     service = ProntoSocorroService(paciente_repo, atendimento_repo)
     cli = TerminalClient(service)
 
-    # Primeiro, registra um paciente e um atendimento
+   
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
         cli.registrar_paciente()
 
     with patch('builtins.input', side_effect=["12345678900", "sim", "não", "não", "não"]):
         cli.registrar_atendimento()
 
-    # Chama o próximo da fila
+ 
     cli.chamar_proximo()
 
-    # Verifica a saída impressa no terminal
     captured = capsys.readouterr()
     assert "Próximo Paciente" in captured.out
 
@@ -67,18 +60,18 @@ def test_buscar_historico(capsys):
     service = ProntoSocorroService(paciente_repo, atendimento_repo)
     cli = TerminalClient(service)
 
-    # Primeiro, registra um paciente e um atendimento
+    
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
         cli.registrar_paciente()
 
     with patch('builtins.input', side_effect=["12345678900", "sim", "não", "não", "não"]):
         cli.registrar_atendimento()
 
-    # Busca o histórico
+    
     with patch('builtins.input', side_effect=["12345678900"]):
         cli.buscar_historico()
 
-    # Verifica a saída impressa no terminal
+
     captured = capsys.readouterr()
     assert "Histórico de atendimentos para João Silva" in captured.out
 
@@ -92,7 +85,6 @@ def setup_cli():
     cli = TerminalClient(service)
     return cli, paciente_repo, service
 
-# CT1: NOME
 def test_nome_valido(setup_cli):
     cli, paciente_repo, _ = setup_cli
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
@@ -135,7 +127,6 @@ def test_nome_invalido_caracteres_numericos(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "Nome contém caracteres inválidos." in captured.out
 
-# CT2: CPF
 def test_cpf_valido(setup_cli):
     cli, paciente_repo, _ = setup_cli
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
@@ -188,7 +179,6 @@ def test_registrar_paciente_cpf_duplicado(setup_cli, capsys):
     assert "CPF já cadastrado." in captured.out
 
 
-# CT3: E-MAIL
 def test_email_valido(setup_cli):
     cli, paciente_repo, _ = setup_cli
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "joao@example.com", "01/01/1990"]):
@@ -210,8 +200,6 @@ def test_email_invalido_com_arroba_e_nao_formatado(setup_cli, capsys):
     captured = capsys.readouterr()
     assert "E-mail inválido." in captured.out
 
-
-
 def test_email_vazio(setup_cli, capsys):
     cli, _, _ = setup_cli
     with patch('builtins.input', side_effect=["João Silva", "12345678900", "", "01/01/1990"]):
@@ -232,13 +220,6 @@ def test_email_sem_nome_do_usuario(setup_cli, capsys):
         cli.registrar_paciente()
     captured = capsys.readouterr()
     assert "E-mail não informado ou contém apenas espaços." in captured.out
-
-
-
-
-# CT4: DATA DE NASCIMENTO DIA
-
-
 
 def test_data_valida(setup_cli):
     cli, paciente_repo, _ = setup_cli
@@ -291,14 +272,14 @@ def test_data_vazia(setup_cli, capsys):
 
 def test_executar_sair(setup_cli, capsys):
     cli, _, _ = setup_cli
-    with patch('builtins.input', return_value="5"):  # Simula a opção de sair
+    with patch('builtins.input', return_value="5"):  
         cli.executar()
     captured = capsys.readouterr()
     assert "Saindo do sistema..." in captured.out
 
 def test_executar_opcao_invalida(setup_cli, capsys):
     cli, _, _ = setup_cli
-    with patch('builtins.input', side_effect=["6", "5"]):  # Opção inválida, depois sair
+    with patch('builtins.input', side_effect=["6", "5"]):  
         cli.executar()
     captured = capsys.readouterr()
     assert "Opção inválida, tente novamente." in captured.out
