@@ -35,31 +35,20 @@ Para baixar as dependências do projeto, execute o seguinte comando no terminal:
 
 Para executar o programa, execute o seguinte comando no terminal na raiz do projeto:
 
-```sh
-$ python main.py
-```
+`$ python main.py`
 
 Para executar os testes, execute o seguinte comando no terminal na raiz do projeto:
 
-```sh
-$ pytest
-```
+`$ python -m unittest`
 
 Para avaliar a cobertura de código, execute o seguinte comando no terminal:
 
-```sh
-$ pytest --cov=main
-```
+`$ coverage run --branch -m unittest discover`
 
 Para visualizar o relatório de cobertura de código no terminal, execute o seguinte comando:
 
-```sh
-$ pytest --cov=main --cov-report=term-missing
-```
+`$ coverage report -m`
 
 Para gerar um relatório HTML com a cobertura de código, execute o seguinte comando:
 
-```sh
-$ pytest --cov=main --cov-report=html
-```
-
+`$ coverage html`
