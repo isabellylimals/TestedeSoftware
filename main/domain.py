@@ -36,7 +36,7 @@ class Paciente:
         return nome.strip()
 
     def validar_cpf(self, cpf: str) -> str:
-        cpf = re.sub(r"[^0-9]", "", cpf)  # Remove caracteres não numéricos
+        cpf = re.sub(r"[^0-9]", "", cpf)  
         if not cpf.isdigit():
             raise ValidacaoError("CPF inválido, deve conter 11 dígitos numéricos.")
         return cpf
